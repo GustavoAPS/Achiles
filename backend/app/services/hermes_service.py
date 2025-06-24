@@ -1,38 +1,58 @@
 from app.database import get_connection
-from app.database import get_all_weight_records
 from app.database import get_all_run_records
-# from app.models.weight_record import WeightRecord
 from app.models.run_record import RunRecord
+from app.models.weight_record import WeightRecord
 
 
 class HermesService:
     def __init__(self) -> None:
         pass
 
-    def create_weight_record(self):
+    def create_weight_record(self, weight_record: WeightRecord):
         conn = get_connection()
         cursor = conn.cursor()
-
-        # Format: YYYY-MM-DD
         cursor.execute("""
         INSERT INTO weight_records (weight_kg, record_date)
         VALUES (?, ?)
-        """, (86.8, '9999-12-31'))
+        """, (weight_record.weight_kg, weight_record.record_date))
         conn.commit()
         conn.close()
-        return "New record created"
-
-    def get_weight_record(self):
-        pass
 
     def get_all_weight_records(self):
-        return get_all_weight_records()
+        conn = get_connection()
+        cursor = conn.cursor()
 
-    def update_weight_record(self):
-        pass
+        cursor.execute("SELECT * FROM weight_records")
+        rows = cursor.fetchall()  # Lista de objetos `sqlite.Row`
 
-    def delete_wight_record():
-        pass
+        conn.close()
+        return [dict(row) for row in rows]
+
+    def update_weight_record(
+            self,
+            weight_record_id: int,
+            weight_record: WeightRecord
+    ):
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE weight_records
+            Set weight_kg = ?, record_date = ?
+            WHERE id = ?
+        """, (weight_record.weight_kg, weight_record.record_date, weight_record_id))
+        conn.commit()
+        conn.close()
+
+    def delete_weight_record(self, weight_record_id: int):
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            DELETE FROM weight_records
+            WHERE id = ?
+        """, (weight_record_id,))
+        conn.commit()
+        conn.close()
+        return {"msg": "user deleted"}
 
     def create_run_record(self, run_record: RunRecord):
         conn = get_connection()
@@ -53,7 +73,7 @@ class HermesService:
         VALUES (?, ?, ?)
         """, (run_record.duration_seconds,
               run_record.distance_km,
-              run_record.day))
+              run_record.record_date))
 
         conn.commit()
         conn.close()

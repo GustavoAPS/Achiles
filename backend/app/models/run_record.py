@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 
 class RunRecord(BaseModel):
-    day: datetime.date
+    record_date: datetime.date
     duration_seconds: int = Field(ge=0)
     distance_km: float
 

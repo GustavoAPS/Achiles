@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from app.routes.hermes_routes import router
+from app.routes.hermes_routes import weight_router, run_router
 from app.database import init_db
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,4 +22,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.include_router(router)
+
+app.include_router(weight_router)
+app.include_router(run_router)

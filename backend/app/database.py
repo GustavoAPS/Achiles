@@ -33,17 +33,6 @@ def init_db():
     conn.close()
 
 
-def get_all_weight_records():
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM weight_records")
-    rows = cursor.fetchall()  # Lista de objetos `sqlite.Row`
-
-    conn.close()
-    return [dict(row) for row in rows]
-
-
 def get_all_run_records():
     conn = get_connection()
     cursor = conn.cursor()

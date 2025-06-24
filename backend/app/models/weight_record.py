@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class WeightRecord(BaseModel):
-    day: datetime.date
+    record_date: datetime.date
     weight_kg: float
 
 # import datetime
